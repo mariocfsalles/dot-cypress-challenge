@@ -1,58 +1,58 @@
 /// <reference types="cypress" />
-
+import ProductPage from '../support/pageObjects/ProductPage';
 
 describe('Testes de gerenciamento de produtos na lista de compras', () => {
+  const productPage = new ProductPage();
+
   beforeEach(() => {
     cy.login('sicrano1@qa.com.br', 'teste');
     cy.visit('/home');
   });
 
   it('Deve visualizar a lista de produtos na página', () => {
+    productPage.verifyProductListIsVisible(); // Cypress lida com as esperas automaticamente
+    productPage.verifyProductSessionIsVisible(); // Cypress lida com as esperas automaticamente
 
-    cy.contains('h4', 'Produtos').should('be.visible')
-    cy.get('section.row.espacamento').should('be.visible')
-    cy.get('div.card').should('have.length.greaterThan', 0)
+    productPage.getProductCards().should('have.length.greaterThan', 0); // Cypress espera automaticamente que o elemento apareça
 
-    cy.get('div.card').first().within(() => {
-      cy.get('h5.card-title').should('be.visible')
-      cy.get('h6.card-subtitle').contains('Preço').should('be.visible')
+    productPage.getFirstProduct().within(() => {
+      productPage.getProductTitle().should('be.visible');
+      productPage.getProductSubtitle().contains('Preço').should('be.visible');
       cy.get('button[data-testid="adicionarNaLista"]').should('be.visible')
-    })
-  })
+    });
+  });
 
   it('Deve visualizar os detalhes de um produto', () => {
-    cy.get('[data-testid="product-detail-link"]').first().click();
+    productPage.goToProductDetailPage(); // Cypress já lida com esperas
     cy.url().should('include', '/detalhesProduto');
   });
 
   it('Deve adicionar um produto à lista e verificar nome, preço, quantidade, total e botões', () => {
-
     let selectedProductName = '';
     let selectedProductPrice = '';
     let productQuantity = 1;
 
-    cy.contains('h4', 'Produtos').should('be.visible');
+    productPage.verifyProductListIsVisible();
 
-    cy.get('.card').first().within(() => {
-      cy.get('h5.card-title').invoke('text').then((productName) => {
+    productPage.getFirstProduct().within(() => {
+      productPage.getProductTitle().invoke('text').then((productName) => {
         selectedProductName = productName.trim();
       });
-      cy.get('h6.card-subtitle.mb-2.text-muted').last().invoke('text').then((productPrice) => {
+      productPage.getProductSubtitle().last().invoke('text').then((productPrice) => {
         selectedProductPrice = parseFloat(productPrice.trim().replace('$ ', ''));
       });
-      cy.get('[data-testid="adicionarNaLista"]').click();
+      productPage.clickAddToListButton();
     });
 
     cy.contains('h1', 'Lista de Compras').should('be.visible');
-    cy.get('button[data-testid="adicionar carrinho"]').should('be.visible');
-    cy.get('div[data-testid="shopping-cart-product-name"]').first().should('contain', selectedProductName);
-    cy.get('div[data-testid="shopping-cart-product-name"]').first().parent().within(() => {
+    productPage.getShoppingCartProductName().should('contain', selectedProductName);
+    productPage.getShoppingCartProductName().parent().within(() => {
       cy.get('p').first().invoke('text').then((cartProductPrice) => {
         const cartPrice = parseFloat(cartProductPrice.trim().replace('Preço R$', ''));
         expect(cartPrice).to.equal(selectedProductPrice);
       });
     });
-    cy.get('div[data-testid="shopping-cart-product-quantity"]').first().should('contain', `Total: ${productQuantity}`);
+    productPage.getShoppingCartProductQuantity().should('contain', `Total: ${productQuantity}`);
     cy.get('button[data-testid="paginaInicial"]').should('be.visible').and('contain', 'Página Inicial');
   });
 
@@ -63,35 +63,35 @@ describe('Testes de gerenciamento de produtos na lista de compras', () => {
     let incrementCount = 2;
     let decrementCount = 1;
 
-    cy.contains('h4', 'Produtos').should('be.visible');
+    productPage.verifyProductListIsVisible();
 
-    cy.get('.card').first().within(() => {
-      cy.get('h5.card-title').invoke('text').then((productName) => {
-        selectedProductName = '' || productName.trim();
+    productPage.getFirstProduct().within(() => {
+      productPage.getProductTitle().invoke('text').then((productName) => {
+        selectedProductName = productName.trim();
       });
-      cy.get('h6.card-subtitle.mb-2.text-muted').last().invoke('text').then((productPrice) => {
+      productPage.getProductSubtitle().last().invoke('text').then((productPrice) => {
         selectedProductPrice = parseFloat(productPrice.trim().replace('$ ', ''));
       });
-      cy.get('[data-testid="adicionarNaLista"]').click();
+      productPage.clickAddToListButton();
     });
 
     cy.contains('h1', 'Lista de Compras').should('be.visible');
-    cy.get('div[data-testid="shopping-cart-product-name"]').first().should('contain', selectedProductName);
+    productPage.getShoppingCartProductName().should('contain', selectedProductName);
 
     for (let i = 0; i < incrementCount; i++) {
-      cy.get('[data-testid="product-increase-quantity"]').first().click();
+      productPage.clickIncreaseQuantity();
     }
 
-    cy.get('div[data-testid="shopping-cart-product-quantity"]').first().should('contain', `Total: ${initialQuantity + incrementCount}`);
+    productPage.getShoppingCartProductQuantity().should('contain', `Total: ${initialQuantity + incrementCount}`);
 
     for (let i = 0; i < decrementCount; i++) {
-      cy.get('[data-testid="product-decrease-quantity"]').first().click();
+      productPage.clickDecreaseQuantity();
     }
 
     let expectedQuantity = initialQuantity + incrementCount - decrementCount;
-    cy.get('div[data-testid="shopping-cart-product-quantity"]').first().should('contain', `Total: ${expectedQuantity}`);
+    productPage.getShoppingCartProductQuantity().should('contain', `Total: ${expectedQuantity}`);
 
-    cy.get('div[data-testid="shopping-cart-product-name"]').first().parent().within(() => {
+    productPage.getShoppingCartProductName().parent().within(() => {
       cy.get('p').first().invoke('text').then((cartProductPrice) => {
         const cartPrice = parseFloat(cartProductPrice.trim().replace('Preço R$', ''));
         expect(cartPrice).to.equal(selectedProductPrice * expectedQuantity);
@@ -102,7 +102,7 @@ describe('Testes de gerenciamento de produtos na lista de compras', () => {
   });
 
   it('Deve impedir decremento abaixo de 1 unidade e desabilitar botão', () => {
-    cy.get('[data-testid="adicionarNaLista"]').first().click();
+    productPage.clickAddToListButton();
     cy.get('[data-testid="product-decrease-quantity"]').should('be.disabled');
   });
 });
