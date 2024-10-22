@@ -1,12 +1,12 @@
-# Processo seletivo para avaliação de conhecimento em Qualidade de Software
+# Processo de avaliação de conhecimento em QA
 
-Este repositório contém a resolução de desafios propostos pela empresa **Dot** como parte do processo seletivo para ingresso na equipe. O objetivo principal deste projeto foi demonstrar habilidades em qualidade de software de um sistema, escolhido a preferência do analista, e assegurar que os critérios de entrega e aceite foram cumpridos.
+Este repositório contém a resolução de desafios propostos por uma empresa como parte do processo seletivo para ingresso na equipe. O objetivo principal deste projeto foi demonstrar habilidades em qualidade de software de um sistema, escolhido a preferência do analista, e assegurar que os critérios de entrega e aceite foram cumpridos.
 
 A plataforma utilizada, **ServeRest**, oferece um ambiente de simulação para testes de funcionalidades essenciais de um sistema de compras online. A automação dos cenários propostos foi desenvolvida utilizando o framework **Cypress**, permitindo garantir a qualidade e a integridade das funcionalidades, mesmo com futuras alterações no código.
 
 ## Sobre o Projeto
 
-O código aqui desenvolvido reflete o compromisso em entregar soluções robustas e automatizadas para desafios reais de desenvolvimento, conforme as especificações exigidas pela **Dot**. Cada cenário de teste foi escolhido estrategicamente para cobrir alguns fluxos principais do sistema, assegurando que as funcionalidades críticas estejam operando conforme esperado.
+O código aqui desenvolvido reflete o compromisso em entregar soluções robustas e automatizadas para desafios reais de desenvolvimento, conforme as especificações exigidas pela empresa. Cada cenário de teste foi escolhido estrategicamente para cobrir alguns fluxos principais do sistema, assegurando que as funcionalidades críticas estejam operando conforme esperado.
 
 Sinta-se à vontade para explorar o repositório e conferir os testes, decisões, automações e a configuração da **GitHub Action** implementada!
 
