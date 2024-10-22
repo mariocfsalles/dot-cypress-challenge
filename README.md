@@ -1,4 +1,4 @@
-# Processo seletivo para avaliação de conhecimento em Qualidad de Software
+# Processo seletivo para avaliação de conhecimento em Qualidade de Software
 
 Este repositório contém a resolução de desafios propostos pela empresa **Dot** como parte do processo seletivo para ingresso na equipe. O objetivo principal deste projeto foi demonstrar habilidades em qualidade de software de um sistema, escolhido a preferência do analista, e assegurar que os critérios de entrega e aceite foram cumpridos.
 
@@ -10,7 +10,7 @@ O código aqui desenvolvido reflete o compromisso em entregar soluções robusta
 
 Sinta-se à vontade para explorar o repositório e conferir os testes, decisões, automações e a configuração da **GitHub Action** implementada!
 
-## User Story: Gerenciar Produtos na Lista de Compras em Sistema Open Source
+## User Story: Gerenciar Lista de Compras
 
 Como um usuário autenticado da plataforma ServeRest,  
 Eu quero gerenciar os produtos de minha lista de compras,  
