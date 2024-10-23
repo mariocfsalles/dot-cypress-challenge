@@ -1,6 +1,6 @@
 name: CI
-on:
-  push:
+
+on: push
 
 jobs:
   cypress-run:
@@ -8,11 +8,47 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: yarn-cache-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-cache-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install Cypress dependencies
+        run: sudo apt-get update && sudo apt-get install -y libnss3 libgtk-3-0 libxss1 libasound2 libgbm-dev
+
+      - name: Install Xvfb
+        run: sudo apt-get install -y xvfb
+
       - name: Cypress run
-        uses: cypress-io/github-action@v6
-      - uses: actions/upload-artifact@v4
+        run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" npx cypress run
+        env:
+          CI: true
+          CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
+
+      - name: Upload Cypress screenshots on failure
         if: failure()
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-screenshots
           path: cypress/screenshots
           if-no-files-found: ignore
+        env:
+          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
